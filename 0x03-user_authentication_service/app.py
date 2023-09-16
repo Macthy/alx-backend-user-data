@@ -61,9 +61,9 @@ def logout() -> str:
     user = AUTH.get_user_from_session_id(session_id)
     if user:
         AUTH.destroy_session(user.id)
-        return redirect(url_for('index', message='Logged out successfully'))
+        return redirect(url_for('/', message='Logged out successfully'))
     else:
-        abort(403, description="Invalid session ID or user not found")
+        return jsonify({"error": "Invalid session ID or user not found"}), 403
 
 
 @app.route('/profile', methods=['GET'], strict_slashes=False)
@@ -77,7 +77,7 @@ def profile() -> str:
     if user:
         return jsonify({"email": user.email}), 200
     else:
-        abort(403, description="Invalid session ID or user not found")
+        return jsonify({"error": "Invalid session ID or user not found"}), 403
 
 
 @app.route('/reset_password', methods=['POST'], strict_slashes=False)
