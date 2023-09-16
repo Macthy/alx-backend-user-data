@@ -3,7 +3,7 @@
 """
 
 from auth import Auth
-from flask import Flask, jsonify, request, abort, redirect
+from flask import Flask, jsonify, request, abort, redirect, url_for
 
 AUTH = Auth()
 app = Flask(__name__)
@@ -61,9 +61,9 @@ def logout() -> str:
     user = AUTH.get_user_from_session_id(session_id)
     if user:
         AUTH.destroy_session(user.id)
-        return redirect('/')
+        return redirect(url_for('index', message='Logged out successfully'))
     else:
-        abort(403)
+        abort(403, description="Invalid session ID or user not found")
 
 
 @app.route('/profile', methods=['GET'], strict_slashes=False)
@@ -77,7 +77,7 @@ def profile() -> str:
     if user:
         return jsonify({"email": user.email}), 200
     else:
-        abort(403)
+        abort(403, description="Invalid session ID or user not found")
 
 
 @app.route('/reset_password', methods=['POST'], strict_slashes=False)
